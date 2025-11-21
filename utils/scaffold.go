@@ -8,22 +8,22 @@ import (
 	"text/template"
 )
 
-// TODO: get current day from CLI flag
-
 const (
 	TEMPLATE_MAIN string = "days/templates/main.go"
 	TEMPLATE_TEST string = "days/templates/main_test.go"
-	DAY           string = "01"
 )
 
 type Day struct {
 	Name string
 }
 
-// Create a directory and associated files for each day. Go templates are located in `days/templates` and use template variables for the `text/template` package to parse. Also adds to blank text files for inputs.
-func ScaffoldDayTemplates() error {
+// Create a directory and associated files for each day. Go templates are located in
+// `days/templates` and use template variables for the `text/template` package to parse.
+// Also adds to blank text files for inputs.
+func ScaffoldDayTemplates(name string) error {
 	templates := []string{TEMPLATE_MAIN, TEMPLATE_TEST}
-	currentDay := Day{DAY}
+	inputs := []string{"input.txt", "input-test.txt"}
+	currentDay := Day{name}
 
 	wd, err := os.Getwd()
 	if err != nil {
@@ -48,17 +48,18 @@ func ScaffoldDayTemplates() error {
 			return err
 		}
 
-		// process template
+		// parse template data
 		templ, err := template.New("day").Parse(string(data))
 		if err != nil {
 			return err
 		}
 
-		// create/write file
+		// get new file name from path parts of template filename
 		pathParts := strings.Split(t, "/")
 		filename := pathParts[len(pathParts)-1]
 		filepath := path.Join(wd, dirPath, filename)
 
+		// create/write file: flags = create unless file already exists, then error
 		file, err := os.OpenFile(filepath, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
 		if err != nil {
 			if os.IsExist(err) {
@@ -78,20 +79,16 @@ func ScaffoldDayTemplates() error {
 		fmt.Printf("main template file written to %s\n", filepath)
 	}
 
-	// create empty text files
-	txt, err := os.Create(path.Join(wd, dirPath, "input.txt"))
-	if err != nil {
-		return err
-	}
-	defer txt.Close()
-	txt.Write(nil)
+	// create empty text files for inputs
+	for _, i := range inputs {
+		txt, err := os.Create(path.Join(wd, dirPath, i))
+		if err != nil {
+			return err
+		}
 
-	txt, err = os.Create(path.Join(wd, dirPath, "input-test.txt"))
-	if err != nil {
-		return err
+		defer txt.Close()
+		txt.Write(nil)
 	}
-	defer txt.Close()
-	txt.Write(nil)
 
 	return nil
 }
