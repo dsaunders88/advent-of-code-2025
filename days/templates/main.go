@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	// "math"
+	// "slices"
+	// "strconv"
 	// "strings"
 	// "github.com/dsaunders88/advent-of-code-2025/utils/data"
 )
@@ -18,7 +21,7 @@ func main() {
 }
 
 func part1(input string) int {
-	// text := data.ReadFromFile(input)
+	// text := data.ReadAsString(input)
 
 	return 0
 }
