@@ -16,94 +16,59 @@ func main() {
 	fmt.Println("  ** ---------------------")
 	fmt.Println(" / °\\ Day 01 Solutions ~~")
 	fmt.Println("/° ・\\ -------------------")
-	fmt.Println("Part 1:", part1(INPUT_FILE))
-	fmt.Println("Part 2:", part2(INPUT_FILE))
-}
 
-func part1(input string) int {
-	text := data.ReadAsString(input)
-	list := parseText(text)
-
-	// current will always be between 0-99
-	var current, total int
+	var current, total1, total2 int
+	// starting/current location of the dial
 	current = 50
 
-	for _, v := range list {
-		// get the remaining distance < 100 after all rotations
-		distance := v % 100
-		sum := current + distance
-
-		switch {
-		case sum == 0, sum == 100:
-			total += 1
-			current = 0
-		case sum < 0:
-			current = 100 + sum
-		case sum > 100:
-			current = sum - 100
-		default:
-			current = sum
-		}
-	}
-
-	return total
-}
-
-func part2(input string) int {
-	text := data.ReadAsString(input)
-	list := parseText(text)
-
-	var current, total int
-	current = 50
-
-	for _, v := range list {
-		// total number of full rotations past 0
-		// (make sure to get absolute of v)
-		rotations := math.Floor(float64(math.Abs(float64(v))) / 100)
-		if rotations >= 1 {
-			total += int(rotations)
-		}
-		
-		distance := v % 100
-		sum := current + distance
-
-		// modified version of above, add to total if passing 0,
-		// not starting on 0
-		switch {
-		case sum == 0, sum == 100:
-			total += 1
-			current = 0
-		case sum < 0:
-			if current != 0 {
-				total += 1
-			}
-			current = 100 + sum
-		case sum > 100:
-			if current != 0 {
-				total += 1
-			}
-			current = sum - 100
-		default:
-			current = sum
-		}
-	}
-
-	return total
-}
-
-func parseText(text string) (list []int) {
-	for row := range strings.SplitSeq(text, "\n") {
+	input := data.ReadAsString(INPUT_FILE)
+	for row := range strings.SplitSeq(input, "\n") {
+		// clicks = total movements left/right
+		// distance = total clicks to move (remainder from clicks % 100)
+		// sum = use to calculate new current position of dial
+		var clicks, distance, sum int
+		// revolutions = full rotation (100) back to current
+		var revolutions float64
 		// for each combination value, split direction from value
 		// return positive int for right, negative for left
-		val, foundR := strings.CutPrefix(row, "R")
-		if foundR {
-			i, _ := strconv.Atoi(val)
-			list = append(list, i)
+		val, found := strings.CutPrefix(row, "R")
+		if found {
+			clicks, _ = strconv.Atoi(val)
 		} else {
-			i, _ := strconv.Atoi(row[1:])
-			list = append(list, i * -1)
+			clicks, _ = strconv.Atoi(row[1:])
+			clicks = clicks * -1
+		}
+
+		// calculate total revolutions
+		revolutions = math.Floor(float64(math.Abs(float64(clicks))) / 100)
+		if revolutions >= 1 {
+			total2 += int(revolutions)
+		}
+
+		// calculate total distance to move & new current
+		distance = clicks % 100
+		sum = current + distance
+
+		switch {
+		case sum == 0, sum == 100:
+			total1 += 1
+			total2 += 1
+			current = 0
+		case sum < 0:
+			if current != 0 {
+				total2 += 1
+			}
+			current = 100 + sum
+		case sum > 100:
+			if current != 0 {
+				total2 += 1
+			}
+			current = sum - 100
+		default:
+			current = sum
 		}
 	}
 
-	return list
+	fmt.Println("Part 1:", total1)
+	fmt.Println("Part 2:", total2)
 }
