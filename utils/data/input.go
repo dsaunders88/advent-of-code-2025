@@ -1,6 +1,7 @@
 package data
 
 import (
+	"bufio"
 	"log"
 	"os"
 	"path"
@@ -18,8 +19,6 @@ func ReadAsString(filename string) string {
 		log.Fatal(err)
 	}
 
-	// fmt.Printf("reading file at path: %s\n", path.Join(wd, filename))
-
 	data, err := os.ReadFile(path.Join(wd, filename))
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +28,28 @@ func ReadAsString(filename string) string {
 	return strings.TrimRight(str, "\n")
 }
 
-// TODO: read contents of an input file as array of strings for each line.
-// func ReadAsLines(filename string) []string {
+// Read contents of an input file as array of strings for each line.
+func ReadAsLines(filename string) (lines []string) {
+	wd, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// }
+	// open new file
+	data, err := os.Open(path.Join(wd, filename))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer data.Close()
+
+	// implement new scanner from buffered i/o & scan each line
+	scanner := bufio.NewScanner(data)
+	for scanner.Scan() {
+		lines = append(lines, strings.TrimRight(scanner.Text(), "\n"))
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	return lines
+}
