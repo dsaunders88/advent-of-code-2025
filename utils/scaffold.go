@@ -21,7 +21,8 @@ type Day struct {
 // `days/templates` and use template variables for the `text/template` package to parse.
 // Also adds to blank text files for inputs.
 func ScaffoldDayTemplates(name string) error {
-	templates := []string{TEMPLATE_MAIN, TEMPLATE_TEST}
+	// remove test
+	templates := []string{TEMPLATE_MAIN}
 	inputs := []string{"input.txt", "input-test.txt"}
 	currentDay := Day{name}
 

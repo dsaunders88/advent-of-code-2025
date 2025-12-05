@@ -3,32 +3,26 @@ package main
 import (
 	"fmt"
 	// "math"
+	// "regexp"
 	// "slices"
 	// "strconv"
 	// "strings"
-	// "github.com/dsaunders88/advent-of-code-2025/utils/data"
+	"github.com/dsaunders88/advent-of-code-2025/utils/data"
 )
 
-const INPUT_FILE string = "days/{{.Name}}/input.txt"
+const INPUT_FILE string = "days/{{.Name}}/input-test.txt"
 
 func main() {
 	fmt.Println("  ˳")
 	fmt.Println("  ** ---------------------")
 	fmt.Println(" / °\\ Day {{.Name}} Solutions ~~")
 	fmt.Println("/° ・\\ -------------------")
-	fmt.Println("Part 1:", part1(INPUT_FILE))
-	fmt.Println("Part 2:", part2(INPUT_FILE))
-}
 
-func part1(input string) int {
-	// text := data.ReadAsString(input)
+	var total1, total2 int
 
-	return 0
-}
+	input := data.ReadAsString(INPUT_FILE)
+	fmt.Printf("%v\n", input)
 
-func part2(input string) int {
-	return 0
-}
-
-func parseText(text string) {
+	fmt.Println("Part 1:", total1)
+	fmt.Println("Part 2:", total2)
 }
